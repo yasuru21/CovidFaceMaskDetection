@@ -192,7 +192,7 @@ if __name__=='__main__':
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
     model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=20)
-    torch.save(model_ft, '/content/mask1_model_resnet101.pth')
-    torch.save('C:Users/bierm/OneDrive/Desktop/mask1_model_resnet101.pth')
+    torch.save(model_ft, 'mask1_model_resnet101.pth')
+    #torch.save(model_ft,'C:Users/bierm/OneDrive/Desktop/mask1_model_resnet101.pth')
 
     visualize_model(model_ft)

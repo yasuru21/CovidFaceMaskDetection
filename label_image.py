@@ -13,9 +13,11 @@ from sklearn.model_selection import train_test_split
 import shutil
 import time
 import copy
-from PIL import Image
+from PIL import Image, ImageOps
 import glob
 import cv2
+from PIL import ImageFont
+from PIL import ImageDraw 
 
 
 filepath = 'mask1_model_resnet101.pth'
@@ -81,5 +83,23 @@ if __name__ == '__main__':
     image = cv2.imread('test_img_joe.jpg')
     label = classify_face(image)
     print("the label is", label)
+    if label=='with_mask':
+        color='green'
+    else:
+        color='red'
+    
+   
+
+    height,width=image.shape[:2]
+    il=Image.open('test_img_joe.jpg')
+    il= ImageOps.expand(il,border=20,fill=color)
+    draw = ImageDraw.Draw(il)
+    # font = ImageFont.truetype(<font-file>, <font-size>)
+    font = ImageFont.truetype(r'C:\Users\System-Pc\Desktop\arial.ttf', 90)
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    draw.text((0,0),label,(255,255,255),font=font)
+    
+    il.save('labeled_output.jpg')
+
 
 

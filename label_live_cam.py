@@ -19,10 +19,20 @@ while(True):
     label = classify_face(frame)
     if(label == 'with_mask'):
         print("No Beep")
+        color=(0,255,0)
     else:
        # sound.play()
-        print("Beep")   
+        print("Beep")  
+        color=(0,0,255)
     cv2.putText(frame,str(label),(100,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+    frame = cv2.copyMakeBorder(
+                 frame, 
+                 5, 
+                 5, 
+                 5,
+                 5,
+                 cv2.BORDER_CONSTANT, 
+                 value=color)
     cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

@@ -64,49 +64,51 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=20):
     best_acc = 0.0
     best_model = copy.deepcopy(model.state_dict())
     
-    new_freeze_state = None
-    prev_freeze_state = False
+    # new_freeze_state = None
+    # prev_freeze_state = False
     for epoch in range(num_epochs):
         print("Epoch {}/{}".format(epoch, num_epochs - 1))
         print('-' * 10)
         
-        for phase in ['train', 'test']:
-            if phase == 'train':
+        for typ in ['train', 'test']:
+            if typ == 'train':
                 scheduler.step()
+                #sets the mode to train
                 model.train()
             else:
+                #sets mode to eval
                 model.eval()
                 
             running_loss = 0.0
             running_corrects = 0
         
-            for inputs, labels in dataloaders[phase]:
+            for inputs, labels in dataloaders[typ]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 
                 optimizer.zero_grad()
                 
                 
-                with torch.set_grad_enabled(phase == 'train'):
+                with torch.set_grad_enabled(typ == 'train'):
                     outputs = model(inputs)
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
                     
-                    if phase == 'train':
+                    if typ == 'train':
                         loss.backward()
                         optimizer.step()
                         
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
             
-            epoch_loss = running_loss / dataset_sizes[phase]
-            epoch_acc = running_corrects.double() / dataset_sizes[phase]
+            epoch_loss = running_loss / dataset_sizes[typ]
+            epoch_acc = running_corrects.double() / dataset_sizes[typ]
             
             print('{} Loss: {:.4f} Acc:{:.4f}'.format(
-                phase, epoch_loss, epoch_acc))
+                typ, epoch_loss, epoch_acc))
             
-            
-            if phase == 'test' and epoch_acc > best_acc:
+            #choose best model so far
+            if typ == 'test' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model = copy.deepcopy(model.state_dict())
             
